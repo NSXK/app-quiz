@@ -9,7 +9,7 @@ function App() {
         <Box sx={{ flexGrow: 1, padding: 2 }}>
             <AppBar position="fixed" color="default" component="nav">
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="back">
+                    <IconButton edge="start" color="inherit" aria-label="back"  n >
                         <ArrowBackIcon />
                     </IconButton>
                     <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'center' }}>
