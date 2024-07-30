@@ -15,41 +15,24 @@ const logos = [
 
 function App() {
 
-    const randomChars = (Logo_name) => {
-        // Generar un carácter aleatorio
+    const randomArrayNameLogo = (logoName) => {
         const getRandomChar = () => {
-            const chars = 'abcdefghijklmnopqrstuvwxyz';
+            const chars = 'abcdefghijklmnñopqrstuvwxyz';
             return chars.charAt(Math.floor(Math.random() * chars.length));
         };
 
-        // Separar en caracteres
-        let logoArray = Logo_name.split('');
+        const logoArray = logoName.split('');
+        const lengthNeeded = logoArray.length <= 5 ? 10 : 15;
+        const randomCharsNeeded = lengthNeeded - logoArray.length;
 
-        // Crear un array nuevo con caracteres aleatorios del mismo tamaño que el logoName
-        let newLogoArray = [];
-        for (let i = 0; i < logoArray.length; i++) {
-            newLogoArray.push(getRandomChar());
-        }
+        // Generar los caracteres aleatorios necesarios
+        const randomChars = Array.from({ length: randomCharsNeeded }, getRandomChar);
 
-        // Agregar suficientes caracteres aleatorios para que la longitud total sea múltiplo de 5
-        while (newLogoArray.length % 5 !== 0) {
-            newLogoArray.push(getRandomChar());
-        }
+        // Combinar y mezclar el array resultante
+        const finalArray = [...logoArray, ...randomChars].sort(() => Math.random() - 0.5);
 
-        // Calcular el número de filas
-        const rows = Math.ceil(newLogoArray.length / 5);
-        const result = [];
-
-        for (let i = 0; i < rows; i++) {
-            result.push(newLogoArray.slice(i * 5, (i + 1) * 5));
-        }
-
-        return result;
+        return finalArray;
     };
-    // Ejemplo de uso
-    let logo = "pepsi";
-    let randomLogoArray = randomChars(logo);
-    console.log(...randomLogoArray);
 
 
     return (
