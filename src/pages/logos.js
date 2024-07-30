@@ -29,7 +29,7 @@ const logos = [
     },
     {
         logo_id: 5,
-        Logo_name: 'Canada_Dry',
+        Logo_name: 'Mountain_dew',
         logo_image: 'assets/imagenes/logos/Pepsi.png',
         logo_level: 1,
     },
