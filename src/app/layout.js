@@ -1,7 +1,11 @@
-import { Inter } from "next/font/google";
-import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+// import "./globals.css";
+// import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+// import { ThemeProvider } from '@mui/material/styles';
+// import CssBaseline from '@mui/material/CssBaseline';
+// import theme from '@/theme/theme'
+// import { AuthProvider } from '@/contexts/AuthProvider'
+import { AuthContextProvider } from '@/context/AuthContext';
+// import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: "Create Next App",
@@ -11,7 +15,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      {/* <AppRouterCacheProvider> */}
+        <AuthContextProvider>
+          {/* <ThemeProvider theme={theme}> */}
+            {/* <CssBaseline /> */}
+            <body>{children}</body>
+          {/* </ThemeProvider> */}
+        </AuthContextProvider>
+        {/* <Toaster /> */}
+      {/* </AppRouterCacheProvider> */}
     </html>
   );
 }

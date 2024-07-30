@@ -1,5 +1,5 @@
 
-import Mensaje from '@/components/Mensaje';
+import Mensaje from 'main/components/Mensaje';
 import { Box, Typography, Button, Stack, Modal, TextField } from '@mui/material'
 import React, {useEffect, useState} from 'react'
 

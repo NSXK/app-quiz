@@ -3,13 +3,60 @@ import { AppBar, Toolbar, Typography, Grid, IconButton, Box, Button } from '@mui
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StarIcon from '@mui/icons-material/Star';
 
+const logos = [
+    {
+        logo_id: 1,
+        Logo_name: 'pepsi',
+        logo_image: 'pepsi',
+        logo_level: 1,
+    }
+]
+
 
 function App() {
+
+    const randomChars = (Logo_name) => {
+        // Generar un carácter aleatorio
+        const getRandomChar = () => {
+            const chars = 'abcdefghijklmnopqrstuvwxyz';
+            return chars.charAt(Math.floor(Math.random() * chars.length));
+        };
+
+        // Separar en caracteres
+        let logoArray = Logo_name.split('');
+
+        // Crear un array nuevo con caracteres aleatorios del mismo tamaño que el logoName
+        let newLogoArray = [];
+        for (let i = 0; i < logoArray.length; i++) {
+            newLogoArray.push(getRandomChar());
+        }
+
+        // Agregar suficientes caracteres aleatorios para que la longitud total sea múltiplo de 5
+        while (newLogoArray.length % 5 !== 0) {
+            newLogoArray.push(getRandomChar());
+        }
+
+        // Calcular el número de filas
+        const rows = Math.ceil(newLogoArray.length / 5);
+        const result = [];
+
+        for (let i = 0; i < rows; i++) {
+            result.push(newLogoArray.slice(i * 5, (i + 1) * 5));
+        }
+
+        return result;
+    };
+    // Ejemplo de uso
+    let logo = "pepsi";
+    let randomLogoArray = randomChars(logo);
+    console.log(...randomLogoArray);
+
+
     return (
         <Box sx={{ flexGrow: 1, padding: 2 }}>
             <AppBar position="fixed" color="default" component="nav">
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="back"  n >
+                    <IconButton edge="start" color="inherit" aria-label="back">
                         <ArrowBackIcon />
                     </IconButton>
                     <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'center' }}>
@@ -29,8 +76,8 @@ function App() {
                         <Button variant="contained" sx={{ width: '140px', height: '140px' }}>Icono</Button>
                     </Box>
                 </Grid>
-                <Grid item xs={8} textAlign="center" sx={{marginTop: '50px'}}>
-                    <img src={'./images/Pepsi.png'} alt="Logo" style={{ width: '100%', maxWidth: '300px' }} />
+                <Grid item xs={8} textAlign="center" sx={{ marginTop: '50px' }}>
+                    <img src={'assets/imagenes/logos/Pepsi.png'} alt="Logo" style={{ width: '100%', maxWidth: '300px' }} />
                     <Grid container spacing={2} justifyContent="center" sx={{ marginTop: 2 }}>
                         {[...Array(5)].map((_, index) => (
                             <Grid item key={index} xs={1} sm={1} md={1} lg={1} xl={1}>
@@ -62,7 +109,7 @@ function App() {
                     </Grid>
                 </Grid>
             </Grid>
-            <Box component="footer" sx={{ height: '90px', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#252525', position: 'fixed', bottom: 0,left: 0,right: 0, width: '100vw' }}>
+            <Box component="footer" sx={{ height: '90px', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#252525', position: 'fixed', bottom: 0, left: 0, right: 0, width: '100vw' }}>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <Button variant="contained" sx={{ width: '65px', height: '65px' }}>Botón 1</Button>
                     <Button variant="contained" sx={{ width: '65px', height: '65px' }}>Botón 2</Button>
