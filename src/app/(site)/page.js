@@ -36,15 +36,16 @@ export default function Page() {
   const router = useRouter();
   const [method, setMethod] = useState('signup');
 
-  useEffect(() => {
-    //* Si el usuario está conectado, redirigir a la página de inicio dashboard
-    if (user != null && user !== undefined) {
-      router.push("/dashboard");
-    }
-  }, [user, router]);
+  // error en el login: . This may be caused by an accidental early return statement.
+  // useEffect(() => {
+  //   //* Si el usuario está conectado, redirigir a la página de inicio dashboard
+  //   if (user != null && user !== undefined) {
+  //     router.push("/dashboard");
+  //   }
+  // }, [user, router]);
 
-  // No mostrar nada ya que el usuario sera redirigido
-  if (user) return null;
+  // // No mostrar nada ya que el usuario sera redirigido
+  // if (user) return null;
 
   const formik_signup = useFormik({
     initialValues: {
