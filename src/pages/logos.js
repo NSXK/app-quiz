@@ -140,7 +140,7 @@ const logos = [
     },
     {
         logo_id: 22,
-        Logo_name: 'Lays',
+        Logo_name: 'Gerber',
         logo_image: 'assets/imagenes/logos/Pepsi.png',
         logo_level: 1,
     },
@@ -355,7 +355,7 @@ const logos = [
     },
     {
         logo_id: 55,
-        Logo_name: 'Aston martin', // carros y motos
+        Logo_name: 'Cadillac', // carros y motos
         logo_image: 'assets/imagenes/logos/Pepsi.png',
         logo_level: 2,
     },
@@ -367,7 +367,7 @@ const logos = [
     },
     {
         logo_id: 57,
-        Logo_name: 'Cadillac',
+        Logo_name: 'Lotus',
         logo_image: 'assets/imagenes/logos/Pepsi.png',
         logo_level: 2,
     },
@@ -463,7 +463,7 @@ const logos = [
     },
     {
         logo_id: 74,
-        Logo_name: 'YoungLA', // Ropa
+        Logo_name: 'Bape', // Ropa
         logo_image: 'assets/imagenes/logos/Pepsi.png',
         logo_level: 2,
     },
