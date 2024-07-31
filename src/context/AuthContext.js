@@ -5,14 +5,15 @@ import React, { useState, useEffect, useContext, createContext } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 
 import { auth } from "@/firebase/config";
+import Loading from "@/components/Loading";
 
-//* Create AuthContext
+//* Crear un AuthContext
 const AuthContext = createContext();
 
-//* Create useAuthContext hook
+//* Crear un useAuthContext hook
 export const useAuthContext = () => useContext(AuthContext);
 
-//* Create AuthContextProvider component to wrap around the app in layout.js
+//* Crear context component AuthContextProvider para envolver la aplicación en el layout.js
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
@@ -37,19 +38,10 @@ export const AuthContextProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{ user }}>
       {loading ? (
-        <div>
-          Loading . . .
-        </div>
+        <Loading />
       ) : (
         children
       )}
     </AuthContext.Provider>
-
-
-
-
-
-
-
   );
 };

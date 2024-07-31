@@ -1,20 +1,17 @@
-//* Import firebase_app from config.js, signInWithEmailAndPassword, and getAuth from firebase/auth
+//Importamos firebase y auth ya inicializado para usar sus métodos y funciones
 import { auth } from "../config";
 
+// Métodos y funciones de firebase auth
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-//* Initialize Firebase
-// const auth = getAuth(firebase_app);
-
-//* Sign in (authenticate user)
-export default async function signIn(email, password) {
-  let result = null,
-    error = null;
+//* Sign in (autenticar un usuario)
+export default async function signIn(nickname) {
+  let result = null, error = null;
   try {
-    //* Sign in user with email and password (sign in)
-    result = await signInWithEmailAndPassword(auth, email, password);
+    //* Iniciar sesión con nickname + @gmail.com y su contraseña será su mismo nickname
+    result = await signInWithEmailAndPassword(auth, nickname + "@gmail.com", nickname);
   } catch (e) {
-    //! Handle errors here
+    //! Manejo de errores aquí
     error = e;
   }
 

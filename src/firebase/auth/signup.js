@@ -1,20 +1,17 @@
-//* Import firebase_app from config.js, signInWithEmailAndPassword, and getAuth from firebase/auth
-import {auth} from "../config";
+//Importamos firebase y auth ya inicializado para usar sus métodos y funciones
+import { auth } from "../config";
 
+// Métodos y funciones de firebase auth
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
-//* Initialize Firebase
-// const auth = getAuth(firebase_app);
-
-//* Sign up (create user)
-export default async function signUp(email, password) {
-  let result = null,
-    error = null;
+//* Sign up (crear usuario)
+export default async function signUp(nickname, name) {
+  let result = null, error = null;
   try {
-    //* Create user with email and password (sign up)
-    result = await createUserWithEmailAndPassword(auth, email, password);
+    //* Crear usuario con nickname + @gmail.com y su contraseña será su mismo nickname
+    result = await createUserWithEmailAndPassword(auth, nickname + "@gmail.com", nickname);
   } catch (e) {
-    //! Handle errors here
+    //! Manejo de errores aquí
     error = e;
   }
 

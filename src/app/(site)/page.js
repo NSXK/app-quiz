@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Llamado a nuestro contexto que maneja el estado de nuestro inicio de sesión
 import { useAuthContext } from "@/context/AuthContext";
@@ -8,7 +8,6 @@ import { useAuthContext } from "@/context/AuthContext";
 import {
   Box,
   Button,
-  FormHelperText,
   Stack,
   Tab,
   Tabs,
@@ -16,7 +15,7 @@ import {
   Typography
 } from '@mui/material';
 
-// Libreria de formulario (formik) & validacion (yup)
+// Libreria de formulario (formik) & validación (yup)
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -38,7 +37,7 @@ export default function Page() {
   const [method, setMethod] = useState('signup');
 
   useEffect(() => {
-    //* Si el usuario no está conectado, redirigir a la página de inicio dashboard
+    //* Si el usuario está conectado, redirigir a la página de inicio dashboard
     if (user != null && user !== undefined) {
       router.push("/dashboard");
     }
@@ -118,12 +117,10 @@ export default function Page() {
     }
   });
 
-  const handleMethodChange = useCallback(
-    (event, value) => {
-      setMethod(value);
-    },
-    []
-  );
+  const handleMethodChange = (event, value) => {
+    setMethod(value);
+  }
+
 
   return (
     <>
@@ -173,7 +170,6 @@ export default function Page() {
                 onSubmit={formik_signup.handleSubmit}
               >
                 <Stack spacing={3}>
-
                   <TextField
                     error={!!(formik_signup.touched.nickname && formik_signup.errors.nickname)}
                     fullWidth
@@ -261,11 +257,3 @@ export default function Page() {
     </>
   );
 };
-
-// Page.getLayout = (page) => (
-//   <AuthLayout>
-//     {page}
-//   </AuthLayout>
-// );
-
-// export default Page;

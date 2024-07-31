@@ -16,6 +16,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
 const firestore = getFirestore(app)
 const auth = getAuth(app)
 const storage = getStorage(app)
@@ -26,3 +27,4 @@ export { firestore, auth, storage }
 
 // const auth = {status: true, user: {name: 'jose', email: 'j@gmail.com'}}
 // export { auth }
+
