@@ -1,103 +1,83 @@
 "use client";
 
 import { useCallback, useEffect, useState } from 'react';
-// import Head from 'next/head';
-// import { useRouter } from 'next/navigation';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+
+// Llamado a nuestro contexto que maneja el estado de nuestro inicio de sesión
+import { useAuthContext } from "@/context/AuthContext";
+
 import {
-  Alert,
   Box,
   Button,
   FormHelperText,
-  Link,
   Stack,
   Tab,
   Tabs,
   TextField,
   Typography
 } from '@mui/material';
-// import { useAuth } from 'src/hooks/use-auth';
-// import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 
-const departments = [
-  { value: "Atlántida", label: "Atlántida" },
-  { value: "Choluteca", label: "Choluteca" },
-  { value: "Colón", label: "Colón" },
-  { value: "Comayagua", label: "Comayagua" },
-  { value: "Copán", label: "Copán" },
-  { value: "Cortés", label: "Cortés" },
-  { value: "El Paraíso", label: "El Paraíso" },
-  { value: "Francisco Morazán", label: "Francisco Morazán" },
-  { value: "Gracias a Dios", label: "Gracias a Dios" },
-  { value: "Intibucá", label: "Intibucá" },
-  { value: "Islas de la Bahía", label: "Islas de la Bahía" },
-  { value: "La Paz", label: "La Paz" },
-  { value: "Lempira", label: "Lempira" },
-  { value: "Ocotepeque", label: "Ocotepeque" },
-  { value: "Olancho", label: "Olancho" },
-  { value: "Santa Bárbara", label: "Santa Bárbara" },
-  { value: "Valle", label: "Valle" },
-  { value: "Yoro", label: "Yoro" },
-];
+// Libreria de formulario (formik) & validacion (yup)
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
-const size = [
-  { value: "XS", label: "XS" },
-  { value: "S", label: "S" },
-  { value: "M", label: "M" },
-  { value: "L", label: "L" },
-  { value: "XL", label: "XL" },
-  { value: "2XL", label: "2XL" },
-];
+// Libreria que nos mostrara toast (notificaciones en pantalla)
+import { toast } from "react-hot-toast";
 
-export default function Page () {
-  // const router = useRouter();
-  // const auth = useAuth();
-  const [method, setMethod] = useState('email');
-  const formik = useFormik({
+// Llamado a clases de inicio de sesión y registro
+import signIn from '@/firebase/auth/signin';
+import signUp from '@/firebase/auth/signup';
+
+// Manejo de rutas: nos sirve para poder movilizarnos dentro de nuestro sitio web
+import { useRouter } from "next/navigation";
+
+export default function Page() {
+  // Esto no crea una variable como tal sino que extrae de nuestro useAuthContext el "user"
+  const { user } = useAuthContext();
+  //* Crea una variable de router
+  const router = useRouter();
+  const [method, setMethod] = useState('signup');
+
+  useEffect(() => {
+    //* Si el usuario no está conectado, redirigir a la página de inicio dashboard
+    if (user != null && user !== undefined) {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
+
+  // No mostrar nada ya que el usuario sera redirigido
+  if (user) return null;
+
+  const formik_signup = useFormik({
     initialValues: {
-      // email: '',
-      id: '',
-      username: '',
-      store: '',
-      // password: '',
-      infoDepartment: 'Atlántida',
-      infoSize: 'xs',
-      // email: 'jmendozacastejon@gmail.com',
-      // password: 'ccc12345',
+      nickname: '',
+      name: '',
       submit: null
     },
     validationSchema: Yup.object({
-      // email: Yup
-      //   .string()
-      //   .email('Must be a valid email')
-      //   .max(255)
-      //   .required('Email is required'),
-      id: Yup
-        .string()
-        .matches(/^[0-9]+$/, 'El número de DNI solo puede contener números sin guiones')
-        .min(13, 'Ingresa un número de identidad válido')
-        .max(13, 'Ingresa un número de identidad válido')
-        .required('Tu ID es requerido'),
-      username: Yup
+      nickname: Yup
         .string()
         .max(255)
-        // .matches(/^[a-zA-Z\s]+$/, 'Este campo no puede llevar número o caracteres no válidos')   
-        .matches(/^[a-zA-ZáéíóúÁÉÍÓÚÑñ\s]+$/, 'El nombre de usuario solo puede contener letras y espacios')
+        .matches(/^[a-zA-Z0-9_]+$/, 'El nombre de usuario solo puede contener letras y espacios')
+        .required('Tu nickname es requerido'),
+      name: Yup
+        .string()
+        .max(255)
+        .matches(/^[a-zA-ZáéíóúÁÉÍÓÚÑñ\s]+$/, 'Ingresa un nombre válido')
         .required('Tu nombre es requerido'),
-      store: Yup
-      .string()
-      .required('El nombre de tienda es requerido'),
-      // password: Yup
-      //   .string()
-      //   .max(255)
-      //   .required('Password is required')
     }),
     onSubmit: async (values, helpers) => {
       try {
-        // await auth.signIn(values.email, values.password);
-        // await auth.signUp(values.id, values.username, values.infoDepartment, values.infoSize, values.store);
-        // router.push('/');
+        const { result, error } = await signUp(values.nickname, values.name);
+
+        if (error) {
+          toast.error("Hubo un problema al registrar, porfavor intenta de nuevo");
+          return console.log(error);
+        }
+
+        // si no hubo error proceder a jugar        
+        toast.success(`¡Te registraste exitosamente! ${values.nickname}`);
+        return router.push("/dashboard");
+
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -106,24 +86,30 @@ export default function Page () {
     }
   });
 
-  const formik_login = useFormik({
+  const formik_signin = useFormik({
     initialValues: {
-      id: '',     
+      nickname: '',
       submit: null
     },
-    validationSchema: Yup.object({     
-      id: Yup
+    validationSchema: Yup.object({
+      nickname: Yup
         .string()
-        .matches(/^[0-9]+$/, 'El número de DNI solo puede contener números sin guiones')
-        .min(13, 'Ingresa un número de identidad válido')
-        .max(13, 'Ingresa un número de identidad válido')
-        .required('Tu ID es requerido'),              
+        .max(255)
+        .matches(/^[a-zA-Z0-9_]+$/, 'El nombre de usuario solo puede contener letras y espacios')
+        .required('Tu nickname es requerido'),
     }),
     onSubmit: async (values, helpers) => {
       try {
-        // await auth.signIn(values.email, values.password);
-        // await auth.signIn(values.id);
-        // router.push('/');
+        const { result, error } = await signIn(values.nickname);
+
+        if (error) {
+          toast.error("Hubo un problema al iniciar sesión, porfavor intenta de nuevo");
+          return console.log(error);
+        }
+
+        // si no hubo error proceder a jugar        
+        toast.success(`¡Iniciaste sesión exitosamente! ${values.nickname}`);
+        return router.push("/dashboard");
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -139,31 +125,11 @@ export default function Page () {
     []
   );
 
-  // useEffect(() => {
-  //   if (auth.isAuthenticated) {
-  //     router.push('/');
-  //   }
-  // }, [])
-
-
-  // const handleSkip = useCallback(
-  //   () => {
-  //     auth.skip();
-  //     router.push('/');
-  //   },
-  //   [auth, router]
-  // );
-
   return (
     <>
-      {/* <Head>
-        <title>
-          Inicio | Indumuebles Quiz
-        </title>
-      </Head> */}
       <Box
         sx={{
-          backgroundColor: 'background.paper',
+          backgroundColor: '#ffffff',
           flex: '1 1 auto',
           alignItems: 'center',
           display: 'flex',
@@ -184,23 +150,8 @@ export default function Page () {
               sx={{ mb: 3 }}
             >
               <Typography variant="h4">
-                Indumuebles Quiz
+                Logo Quiz
               </Typography>
-              {/* <Typography
-                color="text.secondary"
-                variant="body2"
-              >
-                Don&apos;t have an account?
-                &nbsp;
-                <Link
-                  component={NextLink}
-                  href="/auth/register"
-                  underline="hover"
-                  variant="subtitle2"
-                >
-                  Register
-                </Link>
-              </Typography> */}
             </Stack>
             <Tabs
               onChange={handleMethodChange}
@@ -209,123 +160,50 @@ export default function Page () {
             >
               <Tab
                 label="Registrarme"
-                value="email"
+                value="signup"
               />
               <Tab
-                label="Mis Resultados"
-                value="phoneNumber"
+                label="Iniciar Sesión"
+                value="signin"
               />
             </Tabs>
-            {method === 'email' && (
+            {method === 'signup' && (
               <form
                 noValidate
-                onSubmit={formik.handleSubmit}
+                onSubmit={formik_signup.handleSubmit}
               >
                 <Stack spacing={3}>
-                  {/* <TextField
-                    error={!!(formik.touched.email && formik.errors.email)}
-                    fullWidth
-                    helperText={formik.touched.email && formik.errors.email}
-                    label="Email Address"
-                    name="email"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    type="email"
-                    value={formik.values.email}
-                  /> */}
+
                   <TextField
-                    error={!!(formik.touched.id && formik.errors.id)}
+                    error={!!(formik_signup.touched.nickname && formik_signup.errors.nickname)}
                     fullWidth
-                    helperText={formik.touched.id && formik.errors.id}
-                    label="Cédula de Identidad"
-                    name="id"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
+                    helperText={formik_signup.touched.nickname && formik_signup.errors.nickname}
+                    label="Nickname"
+                    name="nickname"
+                    onBlur={formik_signup.handleBlur}
+                    onChange={formik_signup.handleChange}
                     type="text"
-                    value={formik.values.id}
+                    value={formik_signup.values.nickname}
                   />
                   <TextField
-                    error={!!(formik.touched.username && formik.errors.username)}
+                    error={!!(formik_signup.touched.name && formik_signup.errors.name)}
                     fullWidth
-                    helperText={formik.touched.username && formik.errors.username}
-                    label="Nombre Completo"
-                    name="username"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
+                    helperText={formik_signup.touched.name && formik_signup.errors.name}
+                    label="Ingresa tu Nombre"
+                    name="name"
+                    onBlur={formik_signup.handleBlur}
+                    onChange={formik_signup.handleChange}
                     type="text"
-                    value={formik.values.username}
+                    value={formik_signup.values.name}
                   />
-                  <TextField
-                    error={!!(formik.touched.store && formik.errors.store)}
-                    fullWidth
-                    helperText={formik.touched.store && formik.errors.store}
-                    label="Nombre de Tienda"
-                    name="store"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    type="text"
-                    value={formik.values.store}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Departamento"
-                    name="infoDepartment"
-                    error={!!(formik.touched.infoDepartment && formik.errors.infoDepartment)}
-                    helperText={
-                      (formik.touched.infoDepartment && formik.errors.infoDepartment) ||
-                      'Selecciona tu departamento'
-                    }
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    value={formik.values.infoDepartment}
-                    select
-                    SelectProps={{ native: true }}
-                  >
-                    {departments.map((option) => (
-                      <option
-                        key={option.value}
-                        value={option.value}
-                      >
-                        {option.label}
-                      </option>
-                    ))}
-                  </TextField>
-                  <TextField
-                    fullWidth
-                    label="Talla"
-                    name="infoSize"
-                    error={!!(formik.touched.infoSize && formik.errors.infoSize)}
-                    helperText={
-                      (formik.touched.infoSize && formik.errors.infoSize) ||
-                      'Selecciona tu talla de camisa'
-                    }
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    value={formik.values.infoSize}
-                    select
-                    SelectProps={{ native: true }}
-                  >
-                    {size.map((option) => (
-                      <option
-                        key={option.value}
-                        value={option.value}
-                        // value={option.value.toLowerCase()}
-                      >
-                        {option.label}
-                      </option>
-                    ))}
-                  </TextField>
                 </Stack>
-                {/* <FormHelperText sx={{ mt: 1 }}>
-                  Optionally you can skip.
-                </FormHelperText> */}
-                {formik.errors.submit && (
+                {formik_signup.errors.submit && (
                   <Typography
                     color="error"
                     sx={{ mt: 3 }}
                     variant="body2"
                   >
-                    {formik.errors.submit}
+                    {formik_signup.errors.submit}
                   </Typography>
                 )}
                 <Button
@@ -337,50 +215,33 @@ export default function Page () {
                 >
                   Comenzar Quiz
                 </Button>
-                {/* <Button
-                  fullWidth
-                  size="large"
-                  sx={{ mt: 3 }}
-                  onClick={handleSkip}
-                >
-                  Skip authentication
-                </Button> */}
-                {/* <Alert
-                  color="primary"
-                  severity="info"
-                  sx={{ mt: 3 }}
-                >
-                  <div>
-                    You can use <b>demo@devias.io</b> and password <b>Password123!</b>
-                  </div>
-                </Alert> */}
               </form>
             )}
-            {method === 'phoneNumber' && (
+            {method === 'signin' && (
               <form
                 noValidate
-                onSubmit={formik_login.handleSubmit}
+                onSubmit={formik_signin.handleSubmit}
               >
-                <Stack spacing={3}>                 
+                <Stack spacing={3}>
                   <TextField
-                    error={!!(formik_login.touched.id && formik_login.errors.id)}
+                    error={!!(formik_signin.touched.id && formik_signin.errors.id)}
                     fullWidth
-                    helperText={formik_login.touched.id && formik_login.errors.id}
-                    label="ID"
-                    name="id"
-                    onBlur={formik_login.handleBlur}
-                    onChange={formik_login.handleChange}
+                    helperText={formik_signin.touched.id && formik_signin.errors.id}
+                    label="Nickname"
+                    name="nickname"
+                    onBlur={formik_signin.handleBlur}
+                    onChange={formik_signin.handleChange}
                     type="text"
-                    value={formik_login.values.id}
-                  />                  
+                    value={formik_signin.values.nickname}
+                  />
                 </Stack>
-                {formik_login.errors.submit && (
+                {formik_signin.errors.submit && (
                   <Typography
                     color="error"
                     sx={{ mt: 3 }}
                     variant="body2"
                   >
-                    {formik_login.errors.submit}
+                    {formik_signin.errors.submit}
                   </Typography>
                 )}
                 <Button
@@ -390,8 +251,8 @@ export default function Page () {
                   type="submit"
                   variant="contained"
                 >
-                  Ver mis Resultados
-                </Button>                
+                  Iniciar Sesión
+                </Button>
               </form>
             )}
           </div>
